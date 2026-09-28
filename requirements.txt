@@ -1,0 +1,32 @@
+# StudyMind 后端依赖（版本为实测通过版本，Python 3.10 ~ 3.12）
+# 国内加速安装：pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+# Web 框架
+fastapi==0.115.6
+uvicorn==0.34.0
+pydantic==2.10.3
+python-dotenv==1.2.2
+httpx==0.27.2
+
+# LLM 编排（OpenAI 兼容协议，DeepSeek）
+langchain==1.4.2
+langchain-core==1.6.5
+langchain-openai==1.6.6
+langchain-text-splitters==1.1.2
+
+# 数据库 / 存储
+psycopg2-binary==2.9.12
+neo4j==6.3.1
+chromadb==0.5.5
+
+# 检索与嵌入
+sentence-transformers==3.0.1
+rank-bm25==0.2.2
+jieba==0.42.1
+FlagEmbedding==1.4.2
+
+# PDF 解析（多策略 + 扫描版 OCR 兜底；OCR 需另装 Tesseract，见部署说明）
+pymupdf==1.28.2
+pdfplumber==0.11.10
+pypdf==6.19.0
+pytesseract==0.3.13

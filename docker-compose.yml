@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: studymind-pg
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: studymind
+    ports:
+      - "5433:5432"   # 宿主机映射到 5433，避免与本地 PostgreSQL 冲突
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      # 首次启动自动建表（含演示用户）
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: studymind-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/password
+    ports:
+      - "7474:7474"   # 图谱可视化界面 http://localhost:7474
+      - "7687:7687"   # bolt 协议（代码连接用）
+    volumes:
+      - neo4j_data:/data
+
+volumes:
+  pg_data:
+  neo4j_data:

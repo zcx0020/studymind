@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* ── 全局基础（Tailwind v4 preflight 之上的补充） ── */
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── 旧页面（图谱/计划/答题/看板，Element Plus 系）仍依赖的令牌 ── */
+:root {
+  --page: #f9fafb;
+  --surface: #ffffff;
+  --ink: #111827;
+  --ink-secondary: #52514e;
+  --ink-muted: #898781;
+  --grid: #e1e0d9;
+  --border: rgba(11, 11, 11, 0.10);
+  color-scheme: light;
+}
+
+.page { padding: 20px 24px; }
+h2 { font-size: 20px; margin: 0 0 16px; font-weight: 600; }
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.kp-card { margin-bottom: 16px; }
+.question { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--grid); }
+.question:last-child { border-bottom: none; margin-bottom: 0; }
+.stem { margin: 0 0 8px; line-height: 1.6; }
+.option { display: block; margin: 4px 0; height: auto; }
+.analysis { margin-top: 8px; color: var(--ink-secondary); font-size: 13px; line-height: 1.6; }
+.theta { color: var(--ink-muted); font-size: 13px; margin-left: 10px; }

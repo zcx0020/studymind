@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: studymind
     ports:
-      - "5433:5432"   # 宿主机映射到 5433，避免与本地 PostgreSQL 冲突
+      - "5433:5432"   # 宿主机 5432 被占用，映射到 5433
     volumes:
       - pg_data:/var/lib/postgresql/data
       # 首次启动自动建表（含演示用户）
@@ -23,6 +23,12 @@ services:
       - "7687:7687"   # bolt 协议（代码连接用）
     volumes:
       - neo4j_data:/data
+
+  redis:
+    image: redis:7
+    container_name: studymind-redis
+    ports:
+      - "6379:6379"
 
 volumes:
   pg_data:

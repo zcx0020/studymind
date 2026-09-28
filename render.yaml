@@ -1,0 +1,49 @@
+# StudyMind 后端部署蓝图（Render Blueprints）
+# 用法：Render 控制台 → New → Blueprint → 选择本仓库，Render 自动创建以下服务
+#
+# ⚠️ 磁盘说明：BGE-M3 嵌入模型约 2.3GB，必须挂载持久化磁盘，
+#    Render 的磁盘要求付费实例（Starter $7/月 + 磁盘 $0.25/GB/月）。
+#    免费版（512MB 临时盘）放不下嵌入模型，仅适合前端静态页。
+services:
+  - type: web
+    name: studymind-api            # 后端服务名（前端 VITE_API_BASE 引用它）
+    runtime: python
+    plan: starter                  # 付费档（需要磁盘）；若改为 free 则删掉 disk 段，功能受限
+    rootDir: backend               # 构建/启动都在 backend/ 下执行
+    buildCommand: pip install -r requirements.txt
+    # 先拉取嵌入模型到磁盘（幂等），再启动服务；$PORT 由 Render 注入
+    startCommand: bash -c "python ../scripts/fetch_model.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    disk:
+      name: studymind-data        # 持久化磁盘：嵌入模型 + 向量库
+      mountPath: /var/data
+      sizeGB: 5
+    envVars:
+      - key: POSTGRES_DSN
+        fromDatabase:
+          name: studymind-db
+          property: connectionString    # Render 自动生成 postgres:// 连接串
+      - key: NEO4J_URI               # 需手动填：Neo4j AuraDB 免费实例
+        value: neo4j+s://xxxxxxxx.databases.neo4j.io
+      - key: NEO4J_USER
+        value: neo4j
+      - key: NEO4J_PASSWORD
+        sync: false                  # 首次部署后在 Render 面板填写真实密码
+      - key: DEEPSEEK_API_KEY
+        sync: false                  # 在 Render 面板 Environment 里填真实密钥
+      - key: DEEPSEEK_BASE_URL
+        value: https://api.deepseek.com/v1
+      - key: DEEPSEEK_MODEL
+        value: deepseek-chat
+      - key: BGE_M3_PATH
+        value: /var/data/bge-m3      # 嵌入模型落在磁盘上，重启不丢
+      - key: CHROMA_PATH
+        value: /var/data/kb          # 向量库落在磁盘上
+      - key: HF_ENDPOINT
+        value: https://hf-mirror.com # 国内网络下模型下载走镜像
+      - key: CORS_ORIGINS
+        value: https://studymind-web.vercel.app   # 改成你的 Vercel 域名，逗号分隔多个
+
+databases:
+  - name: studymind-db              # PostgreSQL（应用启动时自动建表）
+    plan: free
